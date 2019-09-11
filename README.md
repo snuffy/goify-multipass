@@ -19,7 +19,7 @@ Make sure "Accounts are required" or "Accounts are optional" is selected and Mul
     import multipass "github.com/claimh-solais/goify-multipass"
 
     // Construct the Multipassify encoder
-    m := multipass.New("SHOPIFY MULTIPASS SECRET");
+    m := multipass.New("SHOPIFY MULTIPASS SECRET")
 
     // Create your customer info hash
     customerInfo := new(multipass.CustomerInfo{
@@ -32,7 +32,7 @@ Make sure "Accounts are required" or "Accounts are optional" is selected and Mul
     token := m.Encode(customerInfo)
 
     // Generate a Shopify multipass URL to your shop
-    urlString := m.GenerateURL(customerInfo, "yourstorename.myshopify.com");
+    urlString := m.GenerateURL(customerInfo, "yourstorename.myshopify.com")
 
   // Generates a URL like:  https://yourstorename.myshopify.com/account/login/multipass/<MULTIPASS-TOKEN>
 ```
