@@ -11,8 +11,8 @@ func buildString(parts ...string) string {
 	return buf.String()
 }
 
-func pkcs5Padding(cipherText []byte, blockSize int) []byte {
-	padding := blockSize - len(cipherText)%blockSize
-	padText := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(cipherText, padText...)
+func pkcs5Padding(cipherBytes []byte, blockSize int) []byte {
+	padding := blockSize - (len(cipherBytes) % blockSize)
+	padBytes := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(cipherBytes, padBytes...)
 }

@@ -18,7 +18,7 @@ import (
 
 // New comment
 func New(secret string) (ctx *Multipass, err error) {
-	if len(secret) != 0 {
+	if len(secret) == 0 {
 		err = errors.New("Invalid Secret")
 		return nil, err
 	}
@@ -55,11 +55,9 @@ func (ctx *Multipass) Encode(customerInfo map[string]interface{}) (token string,
 	customerInfo["created_at"] = time.Now().Format(TimeISO8601Layout)
 
 	// Serialize the customer data to JSON and encrypt it
-	var cipherText string
-	if b, err := json.Marshal(customerInfo); err != nil {
-		if cipherBytes, err := ctx.encrypt(b); err != nil {
-			cipherText = string(cipherBytes[:])
-		} else {
+	var cipherBytes []byte
+	if b, err := json.Marshal(customerInfo); err == nil {
+		if cipherBytes, err = ctx.encrypt(b); err != nil {
 			return token, err
 		}
 	} else {
@@ -68,7 +66,6 @@ func (ctx *Multipass) Encode(customerInfo map[string]interface{}) (token string,
 
 	// Create a signature (message authentication code) of the ciphertext
 	// and encode everything using URL-safe Base64 (RFC 4648)
-	cipherBytes := []byte(cipherText)
 	b := bytes.NewBuffer(nil)
 	b.Write(cipherBytes)
 	b.Write(ctx.sign(cipherBytes))
@@ -114,14 +111,8 @@ func (ctx *Multipass) sign(data []byte) (signed []byte) {
 func (ctx *Multipass) encrypt(data []byte) (cipherBytes []byte, err error) {
 	//use PKCS5Padding
 	src := pkcs5Padding(data, aes.BlockSize)
-	if len(src)%aes.BlockSize != 0 {
+	if (len(src) % aes.BlockSize) != 0 {
 		err = errors.New("crypto/cipher input not full blocks")
-		return cipherBytes, err
-	}
-
-	// Use a random IV
-	iv := data[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return cipherBytes, err
 	}
 
@@ -131,7 +122,14 @@ func (ctx *Multipass) encrypt(data []byte) (cipherBytes []byte, err error) {
 	if err != nil {
 		return cipherBytes, err
 	}
-	cipherBytes = make([]byte, aes.BlockSize+len(data))
+
+	cipherBytes = make([]byte, aes.BlockSize+len(src))
+
+	// Use a random IV
+	iv := cipherBytes[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return cipherBytes, err
+	}
 
 	aesEncrypter := cipher.NewCBCEncrypter(block, iv)
 	aesEncrypter.CryptBlocks(cipherBytes[aes.BlockSize:], src)
