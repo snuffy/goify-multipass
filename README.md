@@ -29,10 +29,10 @@ Make sure "Accounts are required" or "Accounts are optional" is selected and Mul
     })
 
     // Encode a Multipass token
-    token := multipass.Encode(customerInfo)
+    token := m.Encode(customerInfo)
 
     // Generate a Shopify multipass URL to your shop
-    urlString := multipass.GenerateURL(customerInfo, "yourstorename.myshopify.com");
+    urlString := m.GenerateURL(customerInfo, "yourstorename.myshopify.com");
 
   // Generates a URL like:  https://yourstorename.myshopify.com/account/login/multipass/<MULTIPASS-TOKEN>
 ```
