@@ -11,8 +11,8 @@ const secret = "e2c1dc490fd04ad8bbcc426316196dba"
 
 func TestTokenGenerate(t *testing.T) {
 	var m = multipass.New(secret)
-	customerInfo := new(multipass.CustomerInfo{
-		Email: "xmhscratch@gmail.com",
+	customerInfo := map[string]interface{}{
+		email: "xmhscratch@gmail.com",
 	})
 	token, err := m.Encode(customerInfo)
 	if err != nil {

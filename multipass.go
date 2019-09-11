@@ -39,20 +39,20 @@ func New(secret string) (ctx *Multipass, err error) {
 }
 
 // Encode comment
-func (ctx *Multipass) Encode(customerInfo *CustomerInfo) (token string, err error) {
+func (ctx *Multipass) Encode(customerInfo map[string]interface{}) (token string, err error) {
 	if customerInfo == nil {
 		err = errors.New("Customer info must be provided")
 		return token, err
 	}
 
-	if customerInfo.Email == "" {
+	if customerInfo["email"] == "" {
 		err = errors.New("Customer email must be provided")
 		return token, err
 	}
 
 	// Store the current time in ISO8601 format.
 	// The token will only be valid for a small timeframe around this timestamp.
-	customerInfo.CreatedAt = time.Now().Format(TimeISO8601Layout)
+	customerInfo["created_at"] = time.Now().Format(TimeISO8601Layout)
 
 	// Serialize the customer data to JSON and encrypt it
 	var cipherText string
@@ -89,7 +89,7 @@ func (ctx *Multipass) Encode(customerInfo *CustomerInfo) (token string, err erro
 }
 
 // GenerateURL comment
-func (ctx *Multipass) GenerateURL(customerInfo *CustomerInfo, domain string) (u *url.URL, err error) {
+func (ctx *Multipass) GenerateURL(customerInfo map[string]interface{}, domain string) (u *url.URL, err error) {
 	if domain == "" {
 		err = errors.New("Shopify domain url must be provided")
 		return u, err
