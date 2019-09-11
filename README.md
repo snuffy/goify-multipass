@@ -26,7 +26,7 @@ Make sure "Accounts are required" or "Accounts are optional" is selected and Mul
         "email": "test@example.com",
         "remote_ip": "USERS IP ADDRESS",
         "return_to": "http://some.url",
-        <...SOME ADDITIONAL METADATA FIELDS>
+        ...ADDITIONAL_METADATA_FIELDS,
     })
 
     // Encode a Multipass token
