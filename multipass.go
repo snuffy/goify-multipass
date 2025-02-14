@@ -52,7 +52,7 @@ func (ctx *Multipass) Encode(customerInfo map[string]interface{}) (token string,
 
 	// Store the current time in ISO8601 format.
 	// The token will only be valid for a small timeframe around this timestamp.
-	customerInfo["created_at"] = time.Now().Format(TimeISO8601Layout)
+	customerInfo["created_at"] = time.Now().Format(time.RFC3339)
 
 	// Serialize the customer data to JSON and encrypt it
 	var cipherBytes []byte
